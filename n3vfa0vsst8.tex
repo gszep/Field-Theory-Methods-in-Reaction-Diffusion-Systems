@@ -1,1 +1,64 @@
-start here
+\documentclass{article}[12pt]
+\renewcommand{\baselinestretch}{1.5}
+
+\usepackage[parfill]{parskip}
+\usepackage[affil-it]{authblk}
+\usepackage[space]{grffile}
+
+\usepackage[a4paper]{geometry}
+\geometry{verbose}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{caption}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage{latexsym,textcomp,longtable,tabulary}
+\usepackage{booktabs,array,multirow}
+\usepackage{amsfonts,amsmath,amssymb,mathbbol,calc}
+\usepackage{subfigure,color,blindtext,enumitem,siunitx}
+
+\usepackage{mathtools}
+\usepackage{url,hyperref,etoolbox}
+\numberwithin{equation}{section}
+\hypersetup{colorlinks=false,pdfborder={0 0 0}}
+
+%+figure layout options
+\restylefloat{figure}
+\setlist{leftmargin=*,before=\setlength{\rightmargin}{\leftmargin}}
+%-figure layout options
+
+\providecommand\citet{\cite}
+\providecommand\citep{\cite}
+\providecommand\citealt{\cite}
+
+\setlength{\parskip}{1em}
+\makeatletter
+\makeatother
+
+
+\newif\iflatexml\latexmlfalse
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}%
+\AtBeginDocument{\DeclareGraphicsExtensions{.pdf,.PDF,.eps,.EPS,.png,.PNG,.tif,.TIF,.jpg,.JPG,.jpeg,.JPEG}}
+\begin{document}
+
+\title{
+Field Theory Methods \\
+in Reaction-Diffusion Systems
+}
+
+\author{Gregory Szep}
+\affil{King's College London}
+\date{\today}
+\maketitle
+
+\section{Mathematical Analysis}
+
+determine moments. Expecting to observe crossover region where equilibrium
+is reached in finite time for sufficiently large $D$...
+
+\bibliography{bibliography/biblio}
+\bibliographystyle{ieeetr}
+\end{document}
