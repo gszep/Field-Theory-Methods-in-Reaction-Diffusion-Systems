@@ -1,3 +1,12 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{Gillespie1992}
+D.~T. Gillespie, ``{A rigorous derivation of the chemical master equation},''
+  {\em Physica A: Statistical Mechanics and its Applications}, vol.~188, no.~1,
+  pp.~404--425, 1992.
+
+\bibitem{Gillespie2007}
+D.~T. Gillespie, ``{Stochastic Simulation of Chemical Kinetics},'' {\em Annu.
+  Rev. Phys. Chem}, vol.~58, pp.~35--55, 2007.
 
 \end{thebibliography}
