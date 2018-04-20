@@ -15,8 +15,11 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 
+\usepackage{xcolor}
+\definecolor{Green}{rgb}{0.0, 0.5, 0.0}
+
 \usepackage{latexsym,textcomp,longtable,tabulary}
-\usepackage{booktabs,array,multirow}
+\usepackage{booktabs,array,multirow,braket}
 \usepackage{amsfonts,amsmath,amssymb,mathbbol,calc}
 \usepackage{subfigure,color,blindtext,enumitem,siunitx}
 
@@ -54,14 +57,11 @@ in Reaction-Diffusion Systems
 \date{\today}
 \maketitle
 \vspace{-25pt}
-\section{Biochemical Processes as Dynamical Systems} \vspace{-10pt}
+\section{Dynamical Systems Approach} \vspace{-10pt}
 In this section we will set the scene for chemical reaction systems and their
-methods of analysis from dynamical and topological perspectives. Dynamical
-methods makes use of phase space, linear stability and bifurcation analysis.
-Green's Functions allow for calculation of correlations and observables.
-Graph theory lends insight into the design principles of chemical networks.
-Finally a more recent approach to spatiall modelling - moving local equilibria -
-is introduced. \vspace{-30pt}
+methods of analysis of steady state and topological perspectives. Dynamical
+methods makes use of field flow, linear stability and bifurcation analysis.
+
 \subsection{Reaction Kinetics} \vspace{-10pt}
 Consider $N$ particles of $S$ species in a finite volume $\Omega$. These particles
 can undergo $R$ possible reactions when they meet within the volume. Suppose the
@@ -70,7 +70,7 @@ than that of species number equilibration. This means that non-reactive collisio
 occur more frequently than collisions that trigger any of the $R$ reactions.
 
 This suggests that at any time $t$ we may pin down the state of the system by a
-vector of populations $s(t)\in\mathbb{N}^S$. The reactions are characterised by
+vector of populations $s(t)\in\mathbb{N}^S$. The reaction topology is given by
 a stoichiometric matrix $\mathbf{\Gamma}\in\mathbb{Z}^{S\times R}$ whos columns
 $\gamma\in\mathbb{Z}^{S}$ represent the state change vector for a reaction. Each
 reaction also has a propensity $\omega(s|\gamma)\in[0,\infty)$ defined though
@@ -86,20 +86,33 @@ In quantum mechamics this would involve calculating the wavefunction overlap
 or transition rates between initial and final configurations.
 
 This rate is proportional to the propensity, up to combinatoric multiplicity
-taking into account the species population $s$. This is the product of all
-component pairs $\langle s,\gamma\rangle$ of choosing $|\gamma|$ out of $s$
-particles to participate in the reaction.
+taking into account the species population $s$. Suppose $g[i]$ represents the
+number of particles of species $i$ taking part in the reaction $\gamma$. Hence
+it also represents the \textit{order} of the reaction.
 \begin{align}
 	\omega(s|\gamma)=
 	\sigma(\gamma)
-		\prod_{\langle s,\gamma\rangle}{s \choose |\gamma|}
+		\prod_{i=1}^S{s[i] \choose g[i]}
 	\label{eq:propensity}
+\end{align}
+For reactions involving one or two distinguishable particles, all
+components of the state change vector $\gamma[i]\in\{-1,0,1\}$. This
+simplifies the combinatoric term to a product of all reactant populations.
+\begin{align}
+	\gamma\in\{-1,0,1\}^S\quad\implies\quad
+	\omega(s|\gamma)=
+	\sigma(\gamma)
+	\prod_{\gamma[i]<0} s[i]
+	\label{eq:simplifiedpropensity}
 \end{align}
 \subsubsection{Chemical Master Equation}\vspace{-10pt}
 By applying the laws of probability and taking the $\mathrm{d}t\rightarrow 0$
 one can derive a time-evolution equation $\mathbb{P}(s,t)$ involving
 the definition \eqref{eq:fundamentalpremise} which has become known as the
-Chemical Master Equation \cite{Gillespie1992,Gillespie2007}.
+Chemical Master Equation \cite{Gillespie1992,Gillespie2007}. Note here
+the complexity lies within the nonlinear state dependence in the propensity
+$\omega(s|\gamma)$. Were it not for this, we could solve this equation using
+spectral methods.
 \begin{align}
 	\partial_t\mathbb{P}(s,t) &=
 	\sum_{\gamma\in\mathbf{\Gamma}}
@@ -116,22 +129,571 @@ unfolding an infinte heirarchy.
 	\left\langle s \right\rangle &=
 	\mathbf{\Gamma} \big\langle \omega(s|\mathbf{\Gamma}) \big\rangle
 	\label{eq:momentheirarchy}
-\end{align}\vspace{-50pt}
+\end{align}
 \subsubsection{Reaction Equation}\vspace{-10pt}
 The mean field approximation factorises higher order moments, implying
 $\big\langle f(s) \big\rangle=f(\langle s\rangle)$ for any nonlinear
 function $f$. These fluctuations can be neglected in the $N,\Omega\rightarrow\infty$
-thermodynamic limit \cite{Gillespie2007}. This closes the infinite heirarchy
+thermodynamic limit, and it is here where the mass-action assumption
+becomes manifest \cite{Gillespie2007}. This closes the infinite heirarchy
 \eqref{eq:momentheirarchy} yielding a nonlinear set of coupled ordinary
-differential equations for a continuous vector field $\psi(t)\in[0,\infty)^S$.
-\begin{align}
+differential equations for a continuous vector field $\psi(t)\in[0,\infty)^S$.\begin{align}
 	\partial_t
 	\psi &=
 	\mathbf{\Gamma}\omega(\psi|\mathbf{\Gamma})
 	\label{eq:reaction}
 \end{align}
+\subsubsection{Bifurcation Analysis}\vspace{-15pt}
+In the mean field approximation \eqref{eq:reaction} we may investigate the
+steady state $\partial_t\psi=0$. This gives rise to a set of $S$ algebraic
+equations in the components $\psi[s]\in[0,\infty)$ of steady state field $\psi^*$
+These define $S-1$ dimensional nullcline hypersurfaces embedded in $S$
+dimensional state space.
+\begin{align}
+	\sum_{r=1}^R\Gamma[s',r]\sigma[r]
+		\prod_{s=1}^S{\psi[s] \choose g[s,r]}
+		\bigg|_{\psi=\psi^*}
+		=0\qquad\forall s'=1,2,\dots,S
+	\label{eq:steadystate}
+\end{align}
+\begin{figure}[H]
+\centering{}
+\captionsetup{justification=centering}
+\includegraphics[scale=0.35]{figures/nullclines}
+\caption{Schematic of two nullclines with their orthogonal local\\ field flows intersecting
+at \textcolor{Green}{stable} and \textcolor{orange}{unstable} fixed points $\psi^*$}
+\label{fig:nullclines}
+\end{figure}
+Nullclines determine local direction of evolution of the system. On a given
+nullcine $\partial_t\psi[s]=0$ the flow of the field must be orthogonal to
+the direction of $\psi[s]$. At intersections between two nullclines, the flow
+must be orthogonal to the plane defined by two axes. At the interections between
+all nullcines we may find the fixed points $\psi^*$ as shown in Figure \ref{fig:nullclines}.
+
+Classification of fixed points $\psi^*$ is done by linearising the equation of motion
+\eqref{eq:reaction} with respect to field perturbation $\varepsilon(t)$ in their vicinity
+and determining the eigenvalues of the resultant $S\times S$ Jacobian $\mathbf{J}(\psi)$
+evaluated at each fixed point $\psi^*$.
+\begin{align}
+	\varepsilon(t) \sim
+	\mathbb{e}^{\mathbf{J}(\psi)|_{\psi=\psi^*}t}\qquad\qquad\qquad\qquad\qquad\qquad
+	\\
+	\quad\text{where}\quad
+	\mathrm{J}[i,j]=
+	\sum_{r=1}^R
+	\sigma[r]
+\bigg(H(\psi[i])-H(\psi[i]-g[i,r])\bigg)
+	\Gamma[j,r]
+		\prod_{s=1}^S{\psi[s] \choose g[s,r]}
+	\\
+	H(x)=\int_0^1\frac{1-t^x}{1-t}\mathrm{d}t\quad
+	\text{are generalised Harmonic Numbers}\qquad
+	\label{eq:linearstability}
+\end{align}
+For reactions involving one or two distinguishable particles as
+in \eqref{eq:simplifiedpropensity} the Jacobian simplifies. We can see that
+both the reaction topology given by stoichiometric coefficients $\Gamma[i,j]$ and
+the reaction rates $\sigma[r]$ contribute to determining the Jacobian and hence
+stability of fixed points.
+\begin{align}
+	\mathrm{J}[i,j]=
+	\sum_{r=1}^R
+		\sigma[r]|\Gamma[i,r]|\Gamma[j,r]
+		\prod_{\Gamma[s,r]<0,\,s\neq i}
+		\psi[s]
+		\qquad \mathbf{\Gamma}\in\{-1,0,1\}^{S\times R}
+	\label{eq:simplifiedjacobian}
+\end{align}
+The sign of eigenvalues $\lambda$ of Jacobian $\mathbf{J}$ determine whether a fixed point
+is stable $\lambda<0$ or unstable $\lambda>0$. As an illustrative example we can characterise
+fixed points given an arbitrary two dimensional Jacobian. Figure \ref{fig:stability} reveals
+the regions of stability and phase space flows.
+\begin{figure}[H]
+\centering{}
+\captionsetup{justification=centering}
+\includegraphics[scale=0.35]{figures/stability}
+\caption{Classification of \textcolor{Green}{stable} and \textcolor{orange}{unstable}
+fixed points for a general \\two dimensional Jacobian in terms of trace $\mathrm{Tr}[\mathbf{J}]$ and
+determinant $|\mathbf{J}|$}
+\label{fig:stability}
+\end{figure}
+Varying the continous parameters $\sigma[r]$ moves the nullcines and may result in
+the creation or annihilation of fixed points of different classes. While an indiviual
+fixed point may change location and local phase space flow, it cannot change class
+without involving another fixed point.
+
+These are called bifurcations and also fall into various catagories.
+Figure \ref{fig:bifurcations} illustrates some of the possible one parameter
+supercritical bifurcations; subcritical cases are obtained by permuting
+stabilities of fixed points. Note the hysterisis loop in the saddle-node
+bifurcation.
+\begin{figure}[H]
+\centering{}
+\captionsetup{justification=centering}
+\includegraphics[scale=0.35]{figures/saddlenode}
+\includegraphics[scale=0.35]{figures/transcritical}
+\includegraphics[scale=0.35]{figures/pitchfork}
+\caption{Saddle-node, Transcritical and Pitchfork bifurcation diagram showing
+\textcolor{Green}{stable} and \\\textcolor{orange}{unstable} fixed points $\psi^*$
+as a function of parameter $\sigma[r]$. Insets show nullcline intersections.}
+\label{fig:bifurcations}
+\end{figure}
+Another catagory of bifurcations involves limit cycles, which emerge from fixed
+points where the linearised Jacobian eigenvalues has no real part. Limit cylces
+have circulating field flow as shown in Figure \ref{fig:stability} along the
+$\mathrm{Tr}[\mathbf{J}]=0$, $|\mathbf{J}|>0$ axis.
+
+Note how oscillations emerge at small amplitudes in the Hopf bifurcation,
+whereas the large amplitude oscillations may instantly emerge in an infinite-period
+or cyclic-fold bifurcation. In Figure \ref{fig:limitcycles} the shaded lines
+represent the peaks and troughs of the oscillations.
+\begin{figure}[H]
+\centering{}
+\captionsetup{justification=centering}
+\includegraphics[scale=0.35]{figures/limitcycles}
+\caption{Hopf, Cyclic-fold and Infinite-Period bifurcation diagram showing
+\textcolor{Green}{stable} and \textcolor{orange}{unstable}\\ fixed points
+and limit cycles as a function of parameter $\sigma[r]$.
+Insets show nullclines [tbc]}
+\label{fig:limitcycles}
+\end{figure}
+
+\section{Field Theory Approach}\vspace{-10pt}
+Taking the mean-field thermodynamic limit gives rise to a set of coupled nonlinear
+ordinary differential equations, whos steady states and limit cylces can be investigated
+readily. Timescales and dynamical information beyond linear stability however are more
+difficult to extract. A field theory approach makes use of diagrammatic expansions
+and Green's Functions allowing for calculation of correlations and observables.
+\vspace{-15pt}
+\subsection{Doi Representation}
+\vspace{-10pt}
+\subsubsection{Reaction Term}
+\vspace{-10pt}
+The starting point for field theory is casting of the nonlinear equations of motion
+into a space in which the state evolves according to a linear equation with
+the complexity compressed into the operator action \cite{Doi1976}.
+
+Suppose we define orthonormal basis $\ket{s}$ to represent $s[i]$ particles for
+all species $i=1\dots S$. Discreteness suggests we should introduce field operators
+$\hat{a}_i,\hat{a}_i^{\dagger}$ that remove/add one particle of species $i$ from/to the state
+$\ket{s}$. Here $\delta_{ij}$ is the delta function indicator
+elements $\mathbb{1}_i[j]:=\delta_{ij}$.
+\begin{align}
+	\begin{matrix}
+		\hat{a}_i\ket{s}:=s[i]\ket{s-\mathbb{1}_i} \\
+		\hat{a}_i^{\dagger}\ket{s}:=\ket{s+\mathbb{1}_i} \\
+		\hat{a}_i^{\dagger}\hat{a}_i\ket{s}=s[i]\ket{s}
+	\end{matrix}
+	\qquad\qquad
+	\begin{matrix}
+		[\hat{a}_i,\hat{a}_j^{\dagger}]=\delta_{ij} \\
+		[\hat{a}_i,\hat{a}_j]=[\hat{a}_i^{\dagger},\hat{a}_j^{\dagger}]=0
+	\end{matrix}
+	\label{eq:fieldoperators}
+\end{align}
+The field operators for different particle species commute and the normalisation
+for the field operators has been chosen such that it becomes possible to have an
+operator representation of the propensity $\hat\omega(\gamma)$ and shifts independent
+of the state $s$.
+\begin{align}
+	\hat\omega(\gamma)\ket{s}=\omega(s|\gamma)\ket{s}
+	\qquad
+	\hat\omega(\gamma):=
+	\lambda(\gamma)
+	\prod_{i=1}^S
+	\hat{a}_i^{\dagger g[i]}\hat{a}_i^{g[i]}
+	\qquad
+	\lambda(\gamma)=
+	\frac{\sigma(\gamma)}{\prod_{i=1}^Sg[i]!}
+	\\
+	\ket{s+\gamma} =
+	\prod_{i=1}^S\hat{a}_i^{\dagger\gamma[i]}
+	\ket{s}\qquad
+	\text{where}\quad
+	\hat{a}_i^{-\dagger}\ket{s}=\ket{s-\mathbb{1}_i}
+	\qquad\qquad\qquad
+	\label{eq:propensityoperator}
+\end{align}
+Defining the time-dependent state $\ket{\Psi(t)}$ as a linear combination of all possible
+states $\ket{s}$ with coefficients $\mathbb{P}(s,t)$ which evolve according to
+the Chemical Master Equation \eqref{eq:cme} allows us to write down a Schr\"odinger
+equation with Hamiltonian $\hat{\mathcal{R}}$. The equation can be obtained by using
+the operator representation of the propensity and shifting indecies $s$ in the sum.
+
+\begin{align}
+	\mathbb{i}\,\partial_t\ket{\Psi(t)}
+	=\hat{\mathcal{R}}\ket{\Psi(t)}
+	\qquad\text{where}\quad
+	\ket{\Psi(t)}:=\sum_{s\in\mathbb{N}^S}\mathbb{P}(s,t)\ket{s}
+	\label{eq:reactionschrodinger}
+\\
+	\hat{\mathcal{R}} = \mathbb{i}\,
+	\sum_{\gamma\in\mathbf{\Gamma}}
+		\lambda(\gamma)
+		\left(
+			\prod_{i=1}^S\hat{a}_i^{\dagger\gamma[i]}
+			-
+			\hat{\mathbb{1}}
+		\right)
+		\prod_{j=1}^S
+			\hat{a}_j^{\dagger g[j]}
+			\hat{a}_j^{g[j]}
+	\qquad\qquad
+	\label{eq:reactionhamiltonian}
+\end{align}
+Amazing! We are now allowed to import all the methods from Quantum Mechanics from
+diagrammatic expansions through to non-equilibrium Green's Functions and Feynman
+path integrals. Let us pause and ponder this Hamiltonian: it is non-Hermitian and
+therefore leads to irreversible dynamics; each reaction has a term involving
+$g[i]$ which defines its \textit{order}; each reaction acts to add/remove particles
+of different species according to $\gamma[i]$.
+\vspace{-10pt}\subsubsection{Diffusion Term}\vspace{-10pt}
+Assuming the \textit{Markov property} possible to write down a more general master
+equation --- also known as the differential form of Chapman-Kolmogorov equation ---
+for a discrete state, continous space-time process. For now lets consider a single
+species $s\in\mathbb{N}$ and let $\mathbb{P}(s_{\mathbf{x}}\dots s_{\mathbf{y}},t)$
+be the joint probability of finding $s_{\mathbf{x}}\dots s_{\mathbf{y}}$
+particles in locations $\mathbf{x}\dots\mathbf{y}\in\mathbb{R}^M$ at time $t$.
+Particles at $\mathbf{x}$ may jump to/from neightbrouhood $\partial\mathbf{x}$.
+\begin{align}
+	\partial_t \mathbb{P}(s_{\mathbf{x}}\dots s_{\mathbf{y}},t) &=
+	D\int_{\mathbb{R}^{M}}\int_{\partial\mathbf{x}}\!
+	(s_{\mathbf{y}}+1)\mathbb{P}(s_{\mathbf{x}}-1\dots s_{\mathbf{y}}+1,t)
+	-
+	s_{\mathbf{x}}\mathbb{P}(s_{\mathbf{x}}\dots s_{\mathbf{y}},t)
+	\,\mathrm{d}\mathbf{y}\mathrm{d}\mathbf{x}
+\end{align}
+Intorducing orthonormal basis $\ket{s_{\mathbf{x}}\dots s_{\mathbf{y}}}$ and field
+operators $\hat{a}(\mathbf{x})^{\dagger},\hat{a}(\mathbf{x})$ that add/remove particles
+to/from location $\mathbf{x}$ as we did in Section 1.2.1 for the Chemical Master Equation,
+allows us to represent diffusion as Hamiltonian $\hat{\mathcal{D}}$ acting on a linear
+state space $\ket{\Psi(t)}$.
+\begin{align}
+	\mathbb{i}\,\partial_t\ket{\Psi(t)}
+	=\hat{\mathcal{D}}\ket{\Psi(t)}
+	\qquad\text{where}\quad
+	\ket{\Psi(t)}:=\sum_{s_{\mathbf{x}}\dots s_{\mathbf{y}}\in\mathbb{N}}
+	\mathbb{P}(s_{\mathbf{x}}\dots s_{\mathbf{y}},t)
+	\ket{s_{\mathbf{x}}\dots s_{\mathbf{y}}}
+	\label{eq:diffusionschrodinger}
+\\
+	\hat{\mathcal{D}} = -\frac{\mathbb{i}\,D}{2}
+	\int_{\mathbb{R}^{M}}\int_{\partial\mathbf{x}}\!
+		(\hat{a}(\mathbf{y})-\hat{a}(\mathbf{x}))^{\dagger}(\hat{a}(\mathbf{y})-\hat{a}(\mathbf{x}))
+	\,\mathrm{d}\mathbf{y}\mathrm{d}\mathbf{x}
+	\qquad\qquad\quad
+	\label{eq:diffusionhamiltonian}
+\end{align}
 \pagebreak
-\subsubsection{Lotka--Volterra Example}\vspace{-10pt}
+\subsubsection{Reaction-Diffusion Hamiltonian}\vspace{-10pt}
+Finally by extending the state space $\ket{s_\mathbf{x}\dots s_\mathbf{y}}$ to multiple particle
+species $s_\mathbf{x}\in\mathbb{N}^S,\mathbf{x}\in\mathbb{R}^M$ we may bring together the contributions
+from reaction and diffusion. In order to simplify results we can vectorise the field operators
+$\hat{a}(\mathbf{x}),\hat{a}(\mathbf{x})^{\dagger}$ such that their $i$th components are the field
+operators for particle species $i$. Note that $^{\dagger}$ acts on the operator and $^\top$ acts on the
+vector, which may lead to inner or outer products.
+\begin{align}
+	\begin{matrix}
+		\hat{a}(\mathbf{x})\ket{s_\mathbf{x}\dots s_\mathbf{y}}
+		:=s_\mathbf{x}\ket{s_\mathbf{x}-1\dots s_\mathbf{y}} \\
+		\hat{a}(\mathbf{x})^{\dagger}\ket{s_\mathbf{x}\dots s_\mathbf{y}}
+		:=\ket{s_\mathbf{x}+1\dots s_\mathbf{y}} \\
+		\hat{a}(\mathbf{x})^{\dagger}
+		\hat{a}(\mathbf{x})
+		\ket{s_\mathbf{x}\dots s_\mathbf{y}}=s_\mathbf{x}\ket{s_\mathbf{x}\dots s_\mathbf{y}}
+	\end{matrix}
+	\qquad\qquad
+	\begin{matrix}
+		[		\hat{a}(\mathbf{x}),
+				\hat{a}(\mathbf{y})^{\dagger\top} ]=\mathbb{1}\delta(\mathbf{x}-\mathbf{y}) \\
+				[		\hat{a}(\mathbf{x}),
+						\hat{a}(\mathbf{y})^{\top} ]=		[		\hat{a}(\mathbf{x})^{\dagger},
+										\hat{a}(\mathbf{y})^{\dagger\top} ]=\mathbb{0}
+	\end{matrix}
+	\label{eq:vectorfieldoperators}
+\end{align}
+The diffusion coefficients for each species are now the elements
+of diagonal matrix $\mathbf{D}$ and reaction rates $\lambda(\gamma,\mathbf{x})$ may also acquire
+spatial dependence. The state $\ket{\Psi(t)}$ now spans $\mathbb{N}^S\times\mathbb{R}^M$. We have
+also rewritten the products of operators in the reaction term as exponentiated inner products
+$\gamma^{\top}\!\ln \hat{a}(\mathbf{x})^{\dagger}=\sum_{i=1}^{S}\gamma[i]\ln\hat{a}_i(\mathbf{x})^{\dagger}$.
+\begin{align}
+	\mathbb{i}\,\partial_t\ket{\Psi(t)}
+	=\int_{\mathbb{R}^M}\!\hat{\mathcal{H}}(\mathbf{x})\mathrm{d}\mathbf{x}\,
+	\ket{\Psi(t)}
+	\quad\text{where}\quad
+	\ket{\Psi(t)}:=\sum_{s_{\mathbf{x}}\dots s_{\mathbf{y}}\in\mathbb{N}^S}
+	\mathbb{P}(s_{\mathbf{x}}\dots s_{\mathbf{y}},t)
+	\ket{s_{\mathbf{x}}\dots s_{\mathbf{y}}}
+	\label{eq:schrodinger}
+\\
+	\hat{\mathcal{H}}(\mathbf{x}) =
+	\mathbb{i}
+	\sum_{\langle\gamma,g\rangle\in\mathbf{\Gamma}}
+		\lambda(\gamma,\mathbf{x})
+		\left(
+			\mathbb{e}^{\,\gamma^{\top}\!\ln \hat{a}(\mathbf{x})^{\dagger}}
+			-
+			\hat{\mathbb{1}}
+		\right)
+			\mathbb{e}^{\,g^{\top}\!\left(\,
+			\ln \hat{a}(\mathbf{x})^{\dagger}+\ln \hat{a}(\mathbf{x})
+			\right)}
+	\qquad\qquad\\
+	-\frac{\mathbb{i}}{2}
+	\int_{\partial\mathbf{x}}\,
+		\left(\hat{a}(\mathbf{y})^{\dagger}-\hat{a}(\mathbf{x})^{\dagger}\right)^\top
+		\!\mathbf{D}\,
+		\big(\hat{a}(\mathbf{y})-\hat{a}(\mathbf{x})\big)
+	\mathrm{d}\mathbf{y}
+	\qquad\qquad\qquad\qquad
+	\label{eq:hamiltonian}
+\end{align}
+\subsection{Green's Functions}\vspace{-10pt}
+\subsubsection{Non-unitary Evolution Operator}\vspace{-10pt}
+Solving \eqref{eq:schrodinger} formally suggests we define a non-unitary time independent
+evolution operator $\hat{\mathcal{U}}(t,t')$. In the ordinary quantum cases this operator is unitary;
+we will have to keep this in mind when applying the following methods.
+\begin{equation}
+\hat{\mathcal{U}}(t,t'):=
+	\mathbb{e}^{-\mathbb{i}(t-t')\int\hat{\mathcal{H}}(\mathbf{x})\mathrm{d}\mathbf{x}}
+	\qquad\qquad
+	\begin{matrix}
+		\hat{\mathcal{U}}(t,t')^\dagger\hat{\mathcal{U}}(t,t') \neq \mathbb{1}\\
+		\hat{\mathcal{H}}(\mathbf{x})^\dagger \neq \hat{\mathcal{H}}(\mathbf{x})
+	\end{matrix}
+	\label{eq:evolutionoperator}
+\end{equation}
+\subsubsection{Dynamical Ensemble Averages}\vspace{-10pt}
+Since the coefficients of state vector $\ket{\Psi(t)}$ directly yield probabilities,
+$\mathbb{P}(s_{\mathbf{x}}\dots s_{\mathbf{y}},t)$ not probability amplitudes, ensemble
+averages $\langle A(\mathbf{x},t)\rangle$ are calculated with a differently defined
+density matrix $\hat\rho(t)$. One of the states in the outer product $\bra{\Psi(t)}$
+is replaced by the unit projection state $\bra{\mathbb{p}}$. This state can be written
+in terms of field operators; in fact it is the left eigenstate of the creation operator
+--- a coherent state.
+\begin{align}
+	\left\langle A(\mathbf{x},t) \right\rangle=
+	\text{Tr}\left[
+	\,\hat\rho(t)\,\hat{\mathcal{A}}(\mathbf{x},t)
+	\right]
+	\quad\text{where}\quad\hat\rho(t):=\ket{\Psi(t)}\!\!\bra{\mathbb{p}}
+	\label{eq:averages}
+\end{align}
+\vspace{-35pt}
+\begin{align}
+	\begin{matrix}
+		\bra{\mathbb{p}}:=
+		\sum_{s_{\mathbf{x}}\dots s_{\mathbf{y}}\in\mathbb{N}^S}
+		\bra{s_{\mathbf{x}}\dots s_{\mathbf{y}}} \\
+		=\bra{\varnothing}\mathbb{e}^{\int\mathrm{d}\hat a(\mathbf{x})}
+		\qquad\qquad
+	\end{matrix}
+	\qquad\bra{\mathbb{p}}\hat{a}(\mathbf{x})^{\dagger}=\bra{\mathbb{p}}
+	\label{eq:projectionoperator}
+\end{align}
+This modified definition of $\hat\rho(t)$ leads to a Liouville Equation and
+Ehrenfest Theorem that do not involve commutators. Furthermore, the time
+evolved density matrix no longer has $\hat{\mathcal{U}}(t,t')$ acting on
+both sides.
+\begin{align}\label{eq:liouville-ehrenfest}
+\mathbb{i}\frac{\overrightarrow{d}}{dt}\hat\rho(t)=\hat{\mathcal{H}}\,\hat\rho(t)
+\qquad\qquad
+\mathbb{i}\frac{\overrightarrow{d}}{dt}\hat{\mathcal{A}}(\mathbf{x},t)
+=\mathbb{i}
+\,\partial_t\hat{\mathcal{A}}(\mathbf{x},t)
++\hat{\mathcal{A}}(\mathbf{x},t)\hat{\mathcal{H}}
+\end{align}\vspace{-30pt}
+\subsubsection{The Heisenberg Picture}\vspace{-10pt}
+In the interacting picture the time dependance is shared between the observable
+$\hat{\mathcal{A}}(\mathbf{x},t)$ and density $\hat\rho(t)$. Transforming out the
+time dependance from the density into the operator using \eqref{eq:evolutionoperator}
+brings the operator into the Heisenberg picture $\hat{\mathcal{A}}_H(\mathbf{x},t)$.
+Letting the evolution $\,\hat{\mathcal{U}}(t):=\hat{\mathcal{U}}(t,0)$ and the
+initial condition $\hat\rho:=\hat\rho(0)$ we can write
+\begin{align}
+	\left\langle A(\mathbf{x},t) \right\rangle=
+	\text{Tr}\left[
+	\,\hat\rho \,\hat{\mathcal{A}}_H(\mathbf{x},t)
+	\right]
+\qquad
+\hat{\mathcal{A}}_H(\mathbf{x},t):=
+\hat{\mathcal{A}}(\mathbf{x},t)\,\exp\left[{-\mathbb{i}\,t
+\int_{\mathbb{R}^M}\!\hat{\mathcal{H}}(\mathbf{x})\,\mathrm{d}\mathbf{x}}
+\right]
+\label{eq:heisenbergpicture}
+\end{align}
+This allows an arbitrary choice for the density matrix, and focuses the dynamics
+onto the operators. Commutators \eqref{eq:vectorfieldoperators} at equal times remain
+the same, and time-independent operators like $\hat{a}(\mathbf{x})$ and
+$\hat{a}(\mathbf{x})^{\dagger}$ pick up a time dependence from the evolution operator.
+\subsubsection{Green's Functions \& the Hierarchy}
+\vspace{-10pt}
+Since both the Hamiltonian and any observable operator can be expressed in terms
+of vector field operators $\hat{a}(\mathbf{x})$ and $\hat{a}(\mathbf{x})^{\dagger}$, all
+dynamical ensemble averages \eqref{eq:heisenbergpicture} are are expressed in terms
+of strings of field operators. It seems natural to attempt defining a building
+block out of which one can express these averages. These objects are known as
+Green's Functions and encode all correlations and responses of the system.
+\begin{equation}\label{eq:green-function}
+\mathbf{G}(\mathbf{x},t|\mathbf{y},t'):=
+\frac{1}{\mathbb{i}}
+\left\langle\mathcal{T}\left\{
+\hat{a}(\mathbf{x},t)
+\hat{a}(\mathbf{y},t')^{\dagger\top}
+\right\}\right\rangle
+\end{equation}
+\vspace{-40pt}
+\begin{align*}
+\hat{a}(\mathbf{x},t)\text{ and } \hat{a}(\mathbf{y},t')^{\dagger}
+\text{ are implicitly in the Heisenberg picture}\\
+\mathcal{T}
+\text{ is the time-ordering meta operator}\qquad\qquad\quad
+\end{align*}
+Above is what is known as a one-particle Green's Function. Substituting this
+ into the Ehrenfest Theorem \eqref{eq:liouville-ehrenfest} leads to two-particle Green's Functions. This
+is due to the nasty way in which the time derivative and time ordering meta-operator
+interact. Repeated substitution of these objects reveals that $n$-particle
+Green's Function is coupled to $n\pm1$ particle Green's Functions. This infinite set of coupled
+differential equations is called the Martin-Schwinger Hierarchy \cite{stefanucci2013}. The time ordering operator $\mathcal{T}\{\,\,.\,\,\}$ is evaluated to obtain
+explicit expressions for Green's Function in terms of greater/lesser and
+retarded/advanced components. We drop the spatial dependance $\mathbf{x}$ to avoid
+clutter.
+\begin{equation}\label{eq:greater-lesser}
+\overset{\text{Greater and Lesser Components}}
+{\mathbf{G}(z,z')=
+\theta(z,z')\mathbf{G}^{>}(z,z')+\theta(z',z)\mathbf{G}^{<}(z,z')}
+\end{equation}
+\begin{equation}\label{eq:retarded-advanced}
+\overset{\text{Retarded / Advanced Components}}
+{\mathbf{G}^{\pm}(t,t')=
+\pm\theta\Big(\pm(t-t')\Big)\Big(\mathbf{G}^{>}(t,t')-\mathbf{G}^{<}(t,t')\Big)}
+\end{equation}
+\begin{equation}\label{eq:green-symmetry}
+\overset{\text{Antisymmetry}}
+{\mathbf{G}^{\gtrless}(t,t')^{\dagger}=-\mathbf{G}^{\gtrless}(t',t)}
+\qquad
+\overset{\text{Causality}}
+{\mathbf{G}^{\pm}(t,t')^{\dagger}=\mathbf{G}^{\mp}(t',t)}
+\end{equation}\vspace{-10pt}\\
+Here $\theta(t-t')$ and $\theta(z,z')$ are
+the Heaviside Step Functions which are nonzero for real $t>t'$ and complex
+$z>z'$ time arguments respectively. These Green's Function possess useful symmetries: anti-symmetry inherited from fermion behaviour and another condition encoding causality. The use of Langreth Rules \cite{stefanucci2013} allows to conversion of contour integrals into real integrals.
+\subsubsection{Noninteracting Equations of Motion}\vspace{-10pt}
+Suppose the hamiltonian $\mathbf{h}(t)$ only has quadratic terms in
+$\hat{a}(\mathbf{x}),\hat{a}(\mathbf{x})^\dagger$. This is effectively a
+non-interacting case and decouples the one-particle equation
+of motion from the hierarchy revealing that the Green's Function is the
+wavefunction solution to the Schr\"odinger Equation with a dirac delta
+excitation in the field. Presented are the  set of conjugate equations in
+single particle orbital matrix form, where the derivative acts on the right and left
+times respectively. Here $\mathbf I$ is the identity matrix.\vspace{-10pt}
+\begin{equation}\label{eq:non-interacting}
+\left[\mathbb{i}\frac{\overrightarrow{d}}{dt}-\mathbf{h}(t)\,\right]
+\mathbf{G}(t,t')=\mathbf{e}(t,t')
+\qquad
+\mathbf{G}(t,t')
+\left[-\mathbb{i}\frac{\overleftarrow{d}}{dt'}-\mathbf{h}(t')\,\right]
+=\mathbf{e}(t,t')
+\end{equation}\vspace{-15pt}
+\begin{equation*}
+\quad\text{where}\quad
+\mathbf{e}(t,t')=\mathbf{I}\,\delta(t,t')
+\quad
+[\,\mathbf h(t)\,]_{i,j}=\bra{i}\hat h(t)\ket{j}
+\end{equation*}
+\subsubsection{The Dyson Equation}\vspace{-10pt}
+Using complex convolutions on the Keldysh Contour $\gamma$, inverses and
+group properties that the Green's Functions obey, its possible to get rid of the time derivative in the equations of motion \eqref{eq:non-interacting} and derive the Dyson Equation.
+This formula expresses the coupled Green's Function $\mathbf{G}(t,t')$ in terms of the isolated Green's Function $\mathbf{g}(t,t')$  , which is obtained by considering the diagonal elements of $\mathbf{h}(t)$ only.
+These are convoluted with the self-energy $\mathbf\Sigma(t,t')$, which can not always be expressed explicitly, but still obeys the same symmetry properties \eqref{eq:green-symmetry} as the Green's Functions. The convolution variables match up in the same way matrix multiplication
+indexes do.\vspace{-10pt}
+\begin{equation}\label{eq:dyson}
+\mathbf{G}_{}(t,t')=
+\mathbf{g}(t,t')+\mathbf{g}\circ
+\mathbf{\Sigma}\circ\mathbf{G}(t,t')=
+\mathbf{g}(t,t')+\mathbf{G}\circ
+\mathbf{\Sigma}\circ\mathbf{g}(t,t')
+\end{equation}
+\begin{equation*}
+\quad\text{where}\quad
+\mathbf a\circ\mathbf b\;(t,t')=
+\int_\gamma\!\mathbf a(t,\tau)\mathbf b(\tau,t')\,\mathrm{d}\tau
+\qquad
+\mathbf{\Sigma}(t,t')
+\text{ is the self-energy}
+\end{equation*}
+\subsubsection{The Keldysh Equation}\vspace{-10pt}
+The analogue of the Dyson equation, projected into  greater/lesser
+and retarded/advanced  subspace, done readily with the help of Langreth Rules, is known as the Keldysh Equation.
+This equation is used to investigate the steady state behaviour.
+\vspace{6pt}
+\begin{align}\label{eq:keldysh}
+\mathbf{G}^{\gtrless}(t,t')=
+\overset{\text{Transient Term}}
+{\left(
+\mathbf{e}+\mathbf{G}^{+}\bullet\mathbf{\Sigma}^{+}
+\right)
+\bullet\mathbf{g}^{\gtrless}\bullet
+\left(
+\mathbf{e}+\mathbf{\Sigma}^{-}\bullet\mathbf{G}^{-}
+\right)(t,t')}+
+\overset{\text{Steady State Term}}
+{\mathbf{G}^{+}
+\bullet\mathbf{\Sigma}^{\gtrless}\bullet
+\mathbf{G}^{-}(t,t')}
+\end{align}
+\vspace{-22pt}
+\begin{equation*}
+\quad\text{where}\quad
+\mathbf a\bullet\mathbf b\;(t,t')=
+\int_{t_0}^{\infty}\!\mathbf{a}(t,\tau)\mathbf{b}(\tau,t')\,\mathrm{d}\tau
+\end{equation*}
+\subsubsection{Time Independent Steady State Regime}\label{s2.3.5}
+The Hamiltonian is time independent
+$\mathbf h(t)=\mathbf h$ if all external influences are also time independent.
+This makes all Green's  Functions components $\mathbf G^{\mathrm X}(t,t')$ -
+among which are the advanced/retarded and greater/lesser components - depend
+on real time differences $\tau=t-t'$, and the time translation invariance  allows
+their representations in fourier space.
+\begin{equation}\label{eq:fourier-representation}
+\overset{\text{Component Fourier Transforms}}
+{\mathbf{G}^{\mathrm X}(\omega)=
+\int_{-\infty}^{\infty}\!\mathbf{G}^{\mathrm X}(\tau)
+e^{\mathbb i\omega\tau}\,\mathrm{d}\tau
+\qquad
+\mathbf{G}^{\mathrm X}(t,t')=
+\frac{1}{2\pi}\int_{-\infty}^{\infty}\!\mathbf{G}^{\mathrm X}(\omega)
+e^{-\mathbb i\omega(t-t')}\,\mathrm{d}\omega}
+\end{equation}
+\vspace{-10pt}\\
+Note that
+ convolution $\bullet$ as defined in equation \eqref{eq:keldysh} reduces to regular fourier convolution
+if $t_0=-\infty$ ; this puts the dynamics far from initial conditions, in the steady state regime. According to the convolution theorem,  applying the fourier transform $\mathcal{F}[\;.\;]$ to convolutions of two functions retrieves the product of their  individual fourier transforms. The Keldysh Equation \eqref{eq:keldysh} yields another powerful simplification.
+\vspace{7pt}
+\begin{equation}\label{eq:steady-state-symmetry}
+\overset{\text{Time Independent Relations}}
+{\mathbf{G}^{+}(\omega)-\mathbf{G}^{-}(\omega)=
+\mathbf{G}^{>}(\omega)-\mathbf{G}^{<}(\omega)}
+\end{equation}
+\begin{equation*}
+\overset{\text{Steady State Convolution }
+\qquad\qquad\qquad\qquad
+\text{Steady State Keldysh Equation}}{}
+\end{equation*}\vspace{-35pt}
+\begin{equation*}
+\mathcal{F}[\,\mathbf{a}\bullet\mathbf{b}\;(t,t')]=
+\mathbf{A}(\omega)\mathbf{B}(\omega)
+\qquad\Rightarrow\qquad
+\mathbf{G}^{\gtrless}(\omega)=
+\mathbf{G}^{+}
+(\omega)\mathbf{\Sigma}^{\gtrless}(\omega)
+\mathbf{G}^{-}(\omega)
+\end{equation*}
+
+\pagebreak
+\section{Model Systems}\vspace{-10pt}
+\subsection{Lotka--Volterra}\vspace{-10pt}
 The Lotka--Volterra model is a canonical example of a predator-prey dynamical
 system. Here we may summarise the reactive behaviour between predators $A(t)$
 and prey $B(t)$ in Feynman diagrams. Particles are represented by arrows
@@ -142,12 +704,14 @@ $\rightarrow$ and reactions by wavy arrows $\leadsto$.
 \includegraphics[scale=0.4]{figures/lotkavolterrafield}
 \caption{Feynman diagram of the Lotka--Volterra field ${A\choose B\,}$  revealing
 autocatalytic birth \\ rate $\lambda$ for prey, constant death rate $\mu$ for predators
-and characteristic interaction $J$}
-\label{fig:semicircle}
+and predator--prey interaction $J$}
+\label{fig:lotkavolterrafield}
 \end{figure}
 Letting $s(t)={A\choose B\,}$, the stoichiometric matrix $\mathbf{\Gamma}$ and
 propensity $\omega(s|\mathbf{\Gamma})$ are determined from the state changes
-$\gamma$ and the rates of each reaction.
+$\gamma$ and the rates of each reaction $\sigma(\gamma)=\mu,\lambda,J$. It
+can easily be seen that the mean field approximation \eqref{eq:reaction}
+now yields the well-known equations.
 \begin{align}
 	\mathbf{\Gamma}=
 	\begin{pmatrix}
@@ -162,16 +726,43 @@ $\gamma$ and the rates of each reaction.
 		J A(t)B(t) \\
 	\end{pmatrix}
 \end{align}
-\subsection{Reaction Topology}
+Figure \ref{fig:lotkavolterraspace} reveals that this reaction topology produces
+nullcines that intersect to form a stable limit cycle. The amplitude is governed
+by the initial conditions and time period by the death and birth rates.
 
-\subsection{Reaction-Diffusion}
+According to the reaction term \eqref{eq:reactionhamiltonian} the
+Hamiltonian for predator field $\hat a$ and prey field $\hat b$ is
+\begin{equation}
+	\mathcal{R}=\mathbb{i}
+	\left(
+		\mu (1-\hat a^\dagger)\hat a
+		+ \lambda (\hat b^{\dagger2}-\hat b^\dagger)\hat b
+		+ J (\hat a^{\dagger2}-\hat a^\dagger \hat b^\dagger) \hat a \hat b
+	\right)
+\end{equation}
+\begin{figure}[H]
+\centering{}
+\captionsetup{justification=centering}
+\includegraphics[scale=0.4]{figures/lotkavolterraspace}
+\caption{Predator--prey field nullcines intersecting at unstable
+fixed point\\ giving rise to stable limit cycle
+whos time period $T\sim 1/\sqrt{\lambda\mu}$ }
+\label{fig:lotkavolterraspace}
+\end{figure}
 
-\section{Field Theory Approach}
-\subsection{Master Equation}
-
-\subsection{Path Integrals}
-
-\subsection{Green's Functions}
+\subsection{Michaelis--Menten}
+\begin{figure}[H]
+\centering{}
+\captionsetup{justification=centering}
+\includegraphics[scale=0.35]{figures/michaelismentenfield}
+\includegraphics[scale=0.35]{figures/reversiblefield}
+\caption{Feynman diagram of the Michaelis--Menten field $(S,E,ES,P)$ showing \\
+reversible substrate--enzyme reaction $\mu$ and irreversible complex to product
+reaction $\lambda$}
+\label{fig:michaelismentenfield}
+\end{figure}
 \bibliography{bibliography/biblio}
 \bibliographystyle{ieeetr}
+
+
 \end{document}
