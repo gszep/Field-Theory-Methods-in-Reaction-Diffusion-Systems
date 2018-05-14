@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.2.22)  14 MAY 2018 11:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.2.22)  14 MAY 2018 16:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1363,38 +1363,38 @@ Package pdftex.def Info: figures/limitcycles.png used on input line 266.
 <figures/lotkavolterrafield.png, id=302, 485.815pt x 369.38pt>
 File: figures/lotkavolterrafield.png Graphic file (type png)
  <use figures/lotkavolterrafield.png>
-Package pdftex.def Info: figures/lotkavolterrafield.png used on input line 736.
+Package pdftex.def Info: figures/lotkavolterrafield.png used on input line 738.
 (pdftex.def)             Requested size: 194.32256pt x 147.74937pt.
  <figures/lotkavolterraspace.png, id=306, 644.4075pt x 435.6275pt>
 File: figures/lotkavolterraspace.png Graphic file (type png)
  <use figures/lotkavolterraspace.png>
-Package pdftex.def Info: figures/lotkavolterraspace.png used on input line 777.
+Package pdftex.def Info: figures/lotkavolterraspace.png used on input line 779.
 (pdftex.def)             Requested size: 257.75844pt x 174.24791pt.
  [15 </home/gszep/Documents/lectures/field-theory/figures/lotkavolterrafield.png>] <figures/michaelismentenfield.png, id=318, 640.3925pt x 369.38pt>
 File: figures/michaelismentenfield.png Graphic file (type png)
  <use figures/michaelismentenfield.png>
-Package pdftex.def Info: figures/michaelismentenfield.png used on input line 788.
+Package pdftex.def Info: figures/michaelismentenfield.png used on input line 790.
 (pdftex.def)             Requested size: 224.14073pt x 129.28493pt.
  <figures/reversiblefield.png, id=319, 399.4925pt x 331.2375pt>
 File: figures/reversiblefield.png Graphic file (type png)
  <use figures/reversiblefield.png>
-Package pdftex.def Info: figures/reversiblefield.png used on input line 789.
+Package pdftex.def Info: figures/reversiblefield.png used on input line 791.
 (pdftex.def)             Requested size: 139.82446pt x 115.93484pt.
  (/home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.bbl [16 </home/gszep/Documents/lectures/field-theory/figures/lotkavolterraspace.png> </home/gszep/Documents/lectures/field-theory/figures/michaelismentenfield.png> </home/gszep/Documents/lectures/field-theory/figures/reversiblefield.png>])
-Overfull \hbox (2.16376pt too wide) in paragraph at lines 800--804
+Overfull \hbox (2.16376pt too wide) in paragraph at lines 802--806
 \OT1/cmr/m/n/10 The Chem-i-cal Mas-ter Equa-tion a spe-cific case of the dif-fer-en-tial form of the Chapman-Kolmogorov
  []
 
-[17] [18]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 926.
- [19] [20]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 926.
+[17] [18] [19]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 963.
+ [20]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 963.
  (/home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 926.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 926.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 963.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 963.
 Package rerunfilecheck Info: File `n3vfa0vsst8.out' has not changed.
 (rerunfilecheck)             Checksum: 74D6618887A277A9EC9EABB6C1F948E0;2221.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 926.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 963.
  ) 
 Here is how much of TeX's memory you used:
  20478 strings out of 493029
@@ -1406,10 +1406,10 @@ Here is how much of TeX's memory you used:
  36i,21n,42p,10362b,842s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/bbold-type1/bbold10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/bbold-type1/bbold7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
 amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/latxfont/lasy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on /home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.pdf (20 pages, 832312 bytes).
+Output written on /home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.pdf (20 pages, 834112 bytes).
 PDF statistics:
- 459 PDF objects out of 1000 (max. 8388607)
- 386 compressed objects within 4 object streams
+ 461 PDF objects out of 1000 (max. 8388607)
+ 388 compressed objects within 4 object streams
  109 named destinations out of 1000 (max. 500000)
  291 words of extra memory for PDF output out of 10000 (max. 10000000)
 

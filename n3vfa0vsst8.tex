@@ -346,6 +346,7 @@ of the state $s$.
 	\qquad\qquad\qquad
 	\label{eq:shiftoperator}
 \end{align}
+\pagebreak
 
 Defining the time-dependent state $\ket{\Psi(t)}$ as a linear combination of all possible
 states $\ket{s}$ with coefficients $\mathbb{P}(s,t)$ which evolve according to
@@ -360,33 +361,34 @@ the operator representation of the propensity and shifting indecies $s$ in the s
 	\label{eq:reactionschrodinger}
 \\
 	\hat{\mathcal{R}} = \mathbb{i}\,
-	\sum_{\gamma\in\mathbf{\Gamma}}
-		\lambda(\gamma)
+	\sum_{r=1}^R
+		\lambda[r]
 		\left(
-			\prod_{i=1}^S\hat{a}_i^{\dagger\gamma[i]}
+			\prod_{i=1}^S\hat{a}_i^{\dagger\Gamma[i,r]}
 			-
 			\hat{\mathbb{1}}
 		\right)
 		\prod_{j=1}^S
-			\hat{a}_j^{\dagger g[j]}
-			\hat{a}_j^{g[j]}
+			\hat{a}_j^{\dagger g[j,r]}
+			\hat{a}_j^{g[j,r]}
 	\qquad\qquad
 	\label{eq:reactionhamiltonian}
 \end{align}
-Amazing! We are now allowed to import all the methods from Quantum Mechanics from
+Amazing! We are now ready to import methods from Quantum Mechanics from
 diagrammatic expansions through to non-equilibrium Green's Functions and Feynman
-path integrals. Let us pause and ponder this Hamiltonian: it is non-Hermitian and
-therefore leads to irreversible dynamics; each reaction has a term involving
-$g[i]$ which defines its \textit{order}; each reaction acts to add/remove particles
-of different species according to $\gamma[i]$.
+path integrals. Let us pause and ponder this Hamiltonian: it is non-Hermitian
+and therefore leads to irreversible dynamics; the term involving $g[i,r]$ is
+zero unless the state contains $g[i,r]$ particles of species $i$, defining the
+\textit{order} of reaction $r$; if the right species are present the term
+involving $\Gamma[i,r]$ is non-zero for  $\Gamma[i,r]\neq 0$ with the state
+change encoded by creation, and inverse-creation operators.
 \vspace{-10pt}\subsubsection{Diffusion Term}\vspace{-10pt}
-Assuming the \textit{Markov property} possible to write down a more general master
-equation --- also known as the differential form of Chapman-Kolmogorov equation ---
-for a discrete state, continous space-time process. For now lets consider a single
-species $s\in\mathbb{N}$ and let $\mathbb{P}(s_{\mathbf{x}}\dots s_{\mathbf{y}},t)$
-be the joint probability of finding $s_{\mathbf{x}}\dots s_{\mathbf{y}}$
-particles in locations $\mathbf{x}\dots\mathbf{y}\in\mathbb{R}^M$ at time $t$.
-Particles at $\mathbf{x}$ may jump to/from neightbrouhood $\partial\mathbf{x}$.
+We consider diffusion on an $M$-dimensional lattice for a discrete state,
+continous space-time process. For now lets consider a single species
+$s\in\mathbb{N}$ and let $\mathbb{P}(s_{\mathbf{x}}\dots s_{\mathbf{y}},t)$ be
+the joint probability of finding $s_{\mathbf{x}}\dots s_{\mathbf{y}}$ particles
+in locations $\mathbf{x}\dots\mathbf{y}\in\mathbb{R}^M$ at time $t$. Particles
+at $\mathbf{x}$ may jump to/from neightbrouhood $\partial\mathbf{x}$.
 \begin{align}
 	\partial_t \mathbb{P}(s_{\mathbf{x}}\dots s_{\mathbf{y}},t) &=
 	D\int_{\mathbb{R}^{M}}\int_{\partial\mathbf{x}}\!
@@ -884,9 +886,10 @@ further factors coming out
 		\implies\qquad\frac{1}{n!}\hat{a}_i^{\dagger n}\hat{a}_i^n\ket{s}
 		&={s[i] \choose n}\ket{s}\qquad\qquad\qquad
 \end{align}
-Now that we have an eigenstate operator representation of the combinatoric
-factor involving $s[i]$ substitution into the general form for the propensity
-\eqref{eq:propensity} yields
+Knowing the eigenstate operator representation of the combinatoric
+factor involving $s[i]$ and letting $\hat{\omega}(r)\ket{s}=\omega(r|s)\ket{s}$,
+we can see from the general form of the propensity
+\eqref{eq:propensity} that
 \begin{align*}
 	\hat\omega(r)=
 	\sigma[r]
@@ -922,5 +925,39 @@ operator has a simple inverse
 \end{align*}
 and hence \eqref{eq:shiftoperator} is easily verified.
 \subsection{Reaction Term}
-d
+Suppose we define a state vector spanning the space of all possible states
+$s\in\mathbb{N}^S$. Inspired by quantum mechanics, we let the coefficients
+of this vector be probability $\mathbb{P}(s,t)$ as given by definition
+\eqref{eq:reactionschrodinger} and derive its equation of motion
+\begin{align*}
+	\partial_t\ket{\Psi(t)}
+	&=\sum_{s\in\mathbb{N}^S}\partial_t\mathbb{P}(s,t)\ket{s}
+	\\
+	&=\sum_{s\in\mathbb{N}^S}\sum_{r=1}^R
+	\omega(r|s-\mathbf{\Gamma}[r])\mathbb{P}(s-\mathbf{\Gamma}[r],t)\ket{s}
+	-\omega(r|s)\mathbb{P}(s,t)\ket{s}
+	\\
+	&=\sum_{r=1}^R
+	\sum_{s\in\mathbb{N}^S}\omega(r|s)\mathbb{P}(s,t)\ket{s+\mathbf{\Gamma}[r]}
+	-\hat{\omega}(r)\sum_{s\in\mathbb{N}^S}\mathbb{P}(s,t)\ket{s}
+	\\
+	&=\sum_{r=1}^R
+	\prod_{i=1}^S
+	\hat{a}_i^{\dagger\Gamma[i,r]}
+	\sum_{s\in\mathbb{N}^S}
+	\omega(r|s)\mathbb{P}(s,t)\ket{s}
+	-\hat{\omega}(r)\sum_{s\in\mathbb{N}^S}\mathbb{P}(s,t)\ket{s}
+	\\
+	&=\sum_{r=1}^R
+	\left(
+	\prod_{i=1}^S
+	\hat{a}_i^{\dagger\Gamma[i,r]}
+	-\hat{\mathbb{1}}
+	\right)
+	\hat{\omega}(r)\sum_{s\in\mathbb{N}^S}
+	\mathbb{P}(s,t)\ket{s}
+\end{align*}
+Indentifying the state vector $\ket{\Psi(t)}$ on the right-hand-side
+and multiplying by the imaginary factor $\mathbb{i}$ recovers the Hamiltonian
+\eqref{eq:reactionhamiltonian}.
 \end{document}
