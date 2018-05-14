@@ -59,64 +59,68 @@ in Reaction-Diffusion Systems
 \vspace{-25pt}
 \section{Dynamical Systems Approach} \vspace{-10pt}
 In this section we will set the scene for chemical reaction systems and their
-methods of analysis of steady state and topological perspectives. Dynamical
+methods of analysis of steady state and network perspectives. Dynamical
 methods makes use of field flow, linear stability and bifurcation analysis.
-
 \subsection{Reaction Kinetics} \vspace{-10pt}
 Consider $N$ particles of $S$ species in a finite volume $\Omega$. These particles
 can undergo $R$ possible reactions when they meet within the volume. Suppose the
 timescales of equilibration with respect to volume and temperature are much faster
 than that of species number equilibration. This means that non-reactive collisions
-occur more frequently than collisions that trigger any of the $R$ reactions.
+occur more frequently than collisions that trigger any of the $R$ reactions. This
+is the essence of the \textit{well-mixed} approximation \cite{Gillespie1992}.
 
-This suggests that at any time $t$ we may pin down the state of the system by a
-vector of populations $s(t)\in\mathbb{N}^S$. The reaction topology is given by
-a stoichiometric matrix $\mathbf{\Gamma}\in\mathbb{Z}^{S\times R}$ whos columns
-$\gamma\in\mathbb{Z}^{S}$ represent the state change vector for a reaction. Each
-reaction also has a propensity $\omega(s|\gamma)\in[0,\infty)$ defined though
-probabilities $\mathbb{P}(s,t)$ of being in state $s$ at time $t$.
+This suggests that at any time $t$ we may ignore spatial inhomogeneities and pin
+down the state of the system by a vector of species populations $s(t)\in\mathbb{N}^S$.
+All possible reactions in the mixture are encoded into a stoichiometric matrix
+$\mathbf{\Gamma}\in\mathbb{Z}^{S\times R}$ whos columns $\mathbf{\Gamma}[r]\in\mathbb{Z}^{S}$
+represent the population change vector for a given reaction $r$. Each reaction
+has a propensity $\omega(r|s)\in[0,\infty)$ defined though transition
+probabilities for an infinitesimal time interval given population $s$;
 \begin{align}
-	\omega(s|\gamma)\mathrm{d}t := \mathbb{P}(s+\gamma,t+\mathrm{d}t|s,t)
+	\omega(r|s)\mathrm{d}t := \mathbb{P}(s+\mathbf{\Gamma}[r],t+\mathrm{d}t|s,t)
 	\label{eq:fundamentalpremise}
 \end{align}
-Suppose $\sigma(\gamma)\mathrm{d}t$ gives the probability that the state change
-$\gamma$ will occur within the time interval $\mathrm{d}t$. The function $\sigma(\gamma)$
-could be in principle calculated from the microscopic physics of the reaction.
-In quantum mechamics this would involve calculating the wavefunction overlap
-or transition rates between initial and final configurations.
+Suppose $\sigma[r]\mathrm{d}t$ gives the probability that the reaction $r$
+will occur within the time interval $\mathrm{d}t$ independent of population
+$s$. The constant $\sigma[r]$ could be in principle calculated from the
+microscopic physics of the reaction. In quantum mechamics this would involve
+calculating the wavefunction overlap or transition rates between initial and
+final configurations.
 
-This rate is proportional to the propensity, up to combinatoric multiplicity
-taking into account the species population $s$. Suppose $g[i]$ represents the
-number of particles of species $i$ taking part in the reaction $\gamma$. Hence
-it also represents the \textit{order} of the reaction.
+The propensity is proportional this rate, up to combinatoric multiplicity
+taking into account the species population $s$. A reaction $r$ chooses $g[i,r]$
+particles for each reactant species $i$ from the $well-mixed$ solution containing
+$s[i]$ particles. Thus the multiplicity is simply given by a binomial coefficient
+per species. This results in a propensity that is polynomial in the components
+$s[i]$, where the highest power term gives us the \textit{order} of the reaction.
 \begin{align}
-	\omega(s|\gamma)=
-	\sigma(\gamma)
-		\prod_{i=1}^S{s[i] \choose g[i]}
+	\omega(r|s)=
+	\sigma[r]
+		\prod_{i=1}^S{s[i] \choose g[i,r]}
 	\label{eq:propensity}
 \end{align}
-For reactions involving one or two distinguishable particles, all
-components of the state change vector $\gamma[i]\in\{-1,0,1\}$. This
-simplifies the combinatoric term to a product of all reactant populations.
+For reactions involving distinguishable particle species, all
+components $ g[i,r]\in\{ 0,1\}$ and simplifies the combinatoric term to a
+product of all reactant populations.
 \begin{align}
-	\gamma\in\{-1,0,1\}^S\quad\implies\quad
-	\omega(s|\gamma)=
-	\sigma(\gamma)
-	\prod_{\gamma[i]<0} s[i]
+	g[i,r]\in\{ 0,1\}\quad\forall i,r\quad\implies\quad
+	\omega(r|s)=
+	\sigma[r]
+	\prod_{i=1}^S s[i]^{g[i,r]}
 	\label{eq:simplifiedpropensity}
 \end{align}
 \subsubsection{Chemical Master Equation}\vspace{-10pt}
 By applying the laws of probability and taking the $\mathrm{d}t\rightarrow 0$
-one can derive a time-evolution equation $\mathbb{P}(s,t)$ involving
-the definition \eqref{eq:fundamentalpremise} which has become known as the
-Chemical Master Equation \cite{Gillespie1992,Gillespie2007}. Note here
-the complexity lies within the nonlinear state dependence in the propensity
-$\omega(s|\gamma)$. Were it not for this, we could solve this equation using
+one can derive --- see Appendix \ref{a:cme} for details --- a time-evolution equation
+$\mathbb{P}(s,t)$ involving the definition \eqref{eq:fundamentalpremise} which
+has become known as the Chemical Master Equation \cite{Gillespie1992,Gillespie2007}.
+Note here the complexity lies within the nonlinear state dependence in the propensity
+$\omega(r|s)$. Were it not for this, we could solve this equation using
 spectral methods.
 \begin{align}
 	\partial_t\mathbb{P}(s,t) &=
-	\sum_{\gamma\in\mathbf{\Gamma}}
-	\omega(s-\gamma|\gamma)\mathbb{P}(s-\gamma,t)-\omega(s|\gamma)\mathbb{P}(s,t)
+	\sum_{r=1}^R
+	\omega(r|s-\mathbf{\Gamma}[r])\mathbb{P}(s-\mathbf{\Gamma}[r],t)-\omega(r|s)\mathbb{P}(s,t)
 	\label{eq:cme}
 \end{align}
 Multiplying the Chemical Master Equation \eqref{eq:cme} by $s$ and summing over all $s$
@@ -133,20 +137,27 @@ unfolding an infinte heirarchy.
 \subsubsection{Reaction Equation}\vspace{-10pt}
 The mean field approximation factorises higher order moments, implying
 $\big\langle f(s) \big\rangle=f(\langle s\rangle)$ for any nonlinear
-function $f$. These fluctuations can be neglected in the $N,\Omega\rightarrow\infty$
+function $f$. This is equivalent to neglecting fluctuations in the
+$N,\Omega\rightarrow\infty$
 thermodynamic limit, and it is here where the mass-action assumption
-becomes manifest \cite{Gillespie2007}. This closes the infinite heirarchy
+becomes manifest \cite{Gillespie2007}.
+
+This closes the infinite heirarchy
 \eqref{eq:momentheirarchy} yielding a nonlinear set of coupled ordinary
-differential equations for a continuous vector field $\psi(t)\in[0,\infty)^S$.\begin{align}
+differential equations for a continuous vector field $\psi(t)\in[0,\infty)^S$.
+These have come to be known as the Reaction Rate Equations, and are
+typical for modelling processes in systems biology.
+\begin{align}
 	\partial_t
 	\psi &=
 	\mathbf{\Gamma}\omega(\psi|\mathbf{\Gamma})
 	\label{eq:reaction}
 \end{align}
+\vspace{-40pt}
 \subsubsection{Bifurcation Analysis}\vspace{-15pt}
 In the mean field approximation \eqref{eq:reaction} we may investigate the
-steady state $\partial_t\psi=0$. This gives rise to a set of $S$ algebraic
-equations in the components $\psi[s]\in[0,\infty)$ of steady state field $\psi^*$
+steady state $\partial_t\psi=0$. This gives rise to a set of $S$ polynomial
+equations in the components $\psi[s]\in[0,\infty)$ of steady state $\psi^*$
 These define $S-1$ dimensional nullcline hypersurfaces embedded in $S$
 dimensional state space.
 \begin{align}
@@ -156,6 +167,7 @@ dimensional state space.
 		=0\qquad\forall s'=1,2,\dots,S
 	\label{eq:steadystate}
 \end{align}
+\vspace{-20pt}
 \begin{figure}[H]
 \centering{}
 \captionsetup{justification=centering}
@@ -191,17 +203,18 @@ evaluated at each fixed point $\psi^*$.
 	\label{eq:linearstability}
 \end{align}
 For reactions involving one or two distinguishable particles as
-in \eqref{eq:simplifiedpropensity} the Jacobian simplifies. We can see that
-both the reaction topology given by stoichiometric coefficients $\Gamma[i,j]$ and
-the reaction rates $\sigma[r]$ contribute to determining the Jacobian and hence
-stability of fixed points.
+in \eqref{eq:simplifiedpropensity} the nullcines become hyperplanes and the Jacobian
+simplifies. We can see that both the reaction topology given by stoichiometric
+coefficients $\Gamma[i,j]$ and the reaction rates $\sigma[r]$ contribute to
+rotating and shifting the hyperplanes and determining the location and stability
+of their intersections.
 \begin{align}
 	\mathrm{J}[i,j]=
 	\sum_{r=1}^R
 		\sigma[r]|\Gamma[i,r]|\Gamma[j,r]
-		\prod_{\Gamma[s,r]<0,\,s\neq i}
-		\psi[s]
-		\qquad \mathbf{\Gamma}\in\{-1,0,1\}^{S\times R}
+		\prod_{\,s\neq i}
+		\psi[s]^{g[i,r]}
+		\qquad g[i,r]\in\{0,1\} \quad\forall i,r
 	\label{eq:simplifiedjacobian}
 \end{align}
 The sign of eigenvalues $\lambda$ of Jacobian $\mathbf{J}$ determine whether a fixed point
@@ -239,13 +252,13 @@ as a function of parameter $\sigma[r]$. Insets show nullcline intersections.}
 \label{fig:bifurcations}
 \end{figure}
 Another catagory of bifurcations involves limit cycles, which emerge from fixed
-points where the linearised Jacobian eigenvalues has no real part. Limit cylces
+points where the linearised Jacobian eigenvalues have no real part. Limit cylces
 have circulating field flow as shown in Figure \ref{fig:stability} along the
 $\mathrm{Tr}[\mathbf{J}]=0$, $|\mathbf{J}|>0$ axis.
 
 Note how oscillations emerge at small amplitudes in the Hopf bifurcation,
 whereas the large amplitude oscillations may instantly emerge in an infinite-period
-or cyclic-fold bifurcation. In Figure \ref{fig:limitcycles} the shaded lines
+or cyclic-fold bifurcation. In Figure \ref{fig:limitcycles} the shaded regions
 represent the peaks and troughs of the oscillations.
 \begin{figure}[H]
 \centering{}
@@ -257,7 +270,19 @@ and limit cycles as a function of parameter $\sigma[r]$.
 Insets show nullclines [tbc]}
 \label{fig:limitcycles}
 \end{figure}
+\subsubsection{Attractor Geometry and Universality}
+In this section we would explore the geometrisation of phase space, lyapunov
+exponents and universality. Perhaps a discussion on phase transitions and
+the relation to Landau-Ginzberg approaches is required.
+Maybe also periodic orbit theory? Depends how useful it is.
+\subsubsection{Reaction-Diffusion}
+Here we first introduce diffusion macroscopically by simply adding the laplacian
+to mean field equation $\eqref{eq:reaction}$. We introduce the turning bifurcation and
+show how linear stability analysis is insufficient to capture pattern formation
+and rich inhomogenous steady states. A promising approach may be geometrisation
+of the moving local equilibria \cite{Halatek2018}.
 
+\pagebreak
 \section{Field Theory Approach}\vspace{-10pt}
 Taking the mean-field thermodynamic limit gives rise to a set of coupled nonlinear
 ordinary differential equations, whos steady states and limit cylces can be investigated
@@ -269,19 +294,26 @@ and Green's Functions allowing for calculation of correlations and observables.
 \vspace{-10pt}
 \subsubsection{Reaction Term}
 \vspace{-10pt}
-The starting point for field theory is casting of the nonlinear equations of motion
-into a space in which the state evolves according to a linear equation with
-the complexity compressed into the operator action \cite{Doi1976}.
+The starting point for setting up the field theory is casting of the nonlinear
+equations of motion into a space in which the state evolves according to a linear
+equation with the complexity compressed into the operator \cite{Doi1976}.
 
 Suppose we define orthonormal basis $\ket{s}$ to represent $s[i]$ particles for
 all species $i=1\dots S$. Discreteness suggests we should introduce field operators
 $\hat{a}_i,\hat{a}_i^{\dagger}$ that remove/add one particle of species $i$ from/to the state
-$\ket{s}$. Here $\delta_{ij}$ is the delta function indicator
-elements $\mathbb{1}_i[j]:=\delta_{ij}$.
+$\ket{s}$. Here $\delta_{ij}$ is the delta and the indicator vector $\mathbb{1}_i[j]:=\delta_{ij}$.
 \begin{align}
 	\begin{matrix}
-		\hat{a}_i\ket{s}:=s[i]\ket{s-\mathbb{1}_i} \\
-		\hat{a}_i^{\dagger}\ket{s}:=\ket{s+\mathbb{1}_i} \\
+		\hat{a}_i\ket{s}:=s[i]\ket{s-\mathbb{1}_i} &&& \hat{a}_i^{\dagger}\ket{s}:=\ket{s+\mathbb{1}_i}
+	\end{matrix}
+	\label{eq:fieldoperators}
+\end{align}
+It can be shown --- see Appendix \ref{a:doi} --- with such chosen
+normalisation these operators
+satisfy the usual bosonic commutation relations and define the number operator
+in the usual way.
+\begin{align}
+	\begin{matrix}
 		\hat{a}_i^{\dagger}\hat{a}_i\ket{s}=s[i]\ket{s}
 	\end{matrix}
 	\qquad\qquad
@@ -289,37 +321,37 @@ elements $\mathbb{1}_i[j]:=\delta_{ij}$.
 		[\hat{a}_i,\hat{a}_j^{\dagger}]=\delta_{ij} \\
 		[\hat{a}_i,\hat{a}_j]=[\hat{a}_i^{\dagger},\hat{a}_j^{\dagger}]=0
 	\end{matrix}
-	\label{eq:fieldoperators}
+	\label{eq:commutationrelations}
 \end{align}
-The field operators for different particle species commute and the normalisation
-for the field operators has been chosen such that it becomes possible to have an
-operator representation of the propensity $\hat\omega(\gamma)$ and shifts independent
+Moreover it becomes possible to have an
+operator representation of the propensity $\hat\omega(r)$ and shifts independent
 of the state $s$.
 \begin{align}
-	\hat\omega(\gamma)\ket{s}=\omega(s|\gamma)\ket{s}
+	\hat\omega(r)\ket{s}=\omega(r|s)\ket{s}
 	\qquad
-	\hat\omega(\gamma):=
-	\lambda(\gamma)
+	\hat\omega(r):=
+	\lambda[r]
 	\prod_{i=1}^S
-	\hat{a}_i^{\dagger g[i]}\hat{a}_i^{g[i]}
+	\hat{a}_i^{\dagger g[i,r]}\hat{a}_i^{g[i,r]}
 	\qquad
-	\lambda(\gamma)=
-	\frac{\sigma(\gamma)}{\prod_{i=1}^Sg[i]!}
+	\lambda[r]=
+	\frac{\sigma[r]}{\prod_{i=1}^Sg[i,r]!}
+	\label{eq:propensityoperator}
 	\\
-	\ket{s+\gamma} =
-	\prod_{i=1}^S\hat{a}_i^{\dagger\gamma[i]}
+	\ket{s+n} =
+	\prod_{i=1}^S\hat{a}_i^{\dagger n[i]}
 	\ket{s}\qquad
 	\text{where}\quad
 	\hat{a}_i^{-\dagger}\ket{s}=\ket{s-\mathbb{1}_i}
 	\qquad\qquad\qquad
-	\label{eq:propensityoperator}
+	\label{eq:shiftoperator}
 \end{align}
+
 Defining the time-dependent state $\ket{\Psi(t)}$ as a linear combination of all possible
 states $\ket{s}$ with coefficients $\mathbb{P}(s,t)$ which evolve according to
 the Chemical Master Equation \eqref{eq:cme} allows us to write down a Schr\"odinger
 equation with Hamiltonian $\hat{\mathcal{R}}$. The equation can be obtained by using
 the operator representation of the propensity and shifting indecies $s$ in the sum.
-
 \begin{align}
 	\mathbb{i}\,\partial_t\ket{\Psi(t)}
 	=\hat{\mathcal{R}}\ket{\Psi(t)}
@@ -728,10 +760,9 @@ now yields the well-known equations.
 \end{align}
 Figure \ref{fig:lotkavolterraspace} reveals that this reaction topology produces
 nullcines that intersect to form a stable limit cycle. The amplitude is governed
-by the initial conditions and time period by the death and birth rates.
-
-According to the reaction term \eqref{eq:reactionhamiltonian} the
-Hamiltonian for predator field $\hat a$ and prey field $\hat b$ is
+by the initial conditions and time period by the death and birth rates. According
+to the reaction term \eqref{eq:reactionhamiltonian} the Hamiltonian for predator
+field $\hat a$ and prey field $\hat b$ is
 \begin{equation}
 	\mathcal{R}=\mathbb{i}
 	\left(
@@ -764,5 +795,132 @@ reaction $\lambda$}
 \bibliography{bibliography/biblio}
 \bibliographystyle{ieeetr}
 
+\appendix
+\section{Chemical Master Equation}\label{a:cme}
+The Chemical Master Equation a specific case of the differential form of the
+Chapman-Kolmogorov equation, which in turn is a consequence of the Markov property and
+considering transitions rates at infinitesimal time intervals. Starting with
+the law of total probability
+\begin{align}
+	\mathbb{P}(s,t+\mathrm{d}t) &=
+	\sum_{s'} \mathbb{P}(s,t+\mathrm{d}t|s',t)\mathbb{P}(s',t)
+\end{align}
+and probability of state change in a small interval $\mathrm{d}t$
+\begin{align}
+	\mathbb{P}(s,t+\mathrm{d}t|s',t)=
+		\delta(s-s')\left(1-\sum_{r=1}^R \omega(r|s')\mathrm{d}t\right)
+		+\sum_{r=1}^R \delta(s-s'-\mathbf{\Gamma}[r])\omega(r|s')\mathrm{d}t
+\end{align}
+where the first term is the probability of no reaction occuring, and the
+second term restricts the possible state changes to those given by
+the stoichiometric matrix $\mathbf{\Gamma}$. Upon substitution into
+the total law of probability the Kronecker deltas $\delta$ filter the sum
+over $s'$ leaving
+\begin{align*}
+	\mathbb{P}(s,t+\mathrm{d}t)-\mathbb{P}(s,t) &=
+	\sum_{r=1}^R  \omega(r|s-\mathbf{\Gamma}[r])\mathrm{d}t\,\mathbb{P}(s-\mathbf{\Gamma}[r],t)-
+	\omega(r|s)\mathrm{d}t\,\mathbb{P}(s,t)
+\end{align*}
+Dividing by $\mathrm{d}t$ and indentifying the time derivative
+on the left hand side recovers \eqref{eq:cme}. Now to get the
+equation for the first moment $\langle s \rangle$ we multiply by
+$s$ and sum over sets $\mathbb{N}^S$
+\begin{align*}
+	\sum_{s\in\mathbb{N}^S}\partial_t\mathbb{P}(s,t) s &=
+	\sum_{s\in\mathbb{N}^S}\sum_{r=1}^R
+	\omega(r|s-\mathbf{\Gamma}[r])\mathbb{P}(s-\mathbf{\Gamma}[r],t)s-\omega(r|s)\mathbb{P}(s,t)s\\
+	\partial_t\sum_{s\in\mathbb{N}^S}\mathbb{P}(s,t) s &=
+	\sum_{r=1}^R \sum_{s\in\mathbb{N}^S}
+	\omega(r|s)\mathbb{P}(s,t)(s+\mathbf{\Gamma}[r])-\omega(r|s)\mathbb{P}(s,t)s\\
+	\partial_t\langle s \rangle &=
+	\sum_{r=1}^R
+	\mathbf{\Gamma}[r]
+ \left\langle\,
+	\omega(r|s)
+	\,\right\rangle
+\end{align*}
+Recognising the matrix-vector multiplication with the stoichiometric matrix
+prompts us to vectorise the propensity $\omega(s|\mathbf{\Gamma})\in[0,\infty)^R$.
+The nonlinear propensity couples to higher order moments, unfolding the
+heirarchy \eqref{eq:momentheirarchy}.
 
+\section{Doi Representation}\label{a:doi}
+Using the defining action of the field operators \eqref{eq:fieldoperators} it is
+possible to verify the bosonic commutation relations, the operator
+representation of propensity and shifts in state space.
+\subsection{Commutation Relations}
+\begin{align*}
+		(\hat{a}_i \hat{a}_j^{\dagger}-\hat{a}_j^{\dagger}\hat{a}_i)
+		\ket{s}&=(s[i]+\delta_{ij}-s[i])\ket{s+\mathbb{1}_j-\mathbb{1}_i}\\
+		&=\delta_{ij}\ket{s+\mathbb{1}_j-\mathbb{1}_i}
+\end{align*}
+\vspace{-30pt}
+\begin{align*}
+		(\hat{a}_i^{\dagger}\hat{a}_j^{\dagger}-\hat{a}_j^{\dagger}\hat{a}_i^{\dagger})
+		\ket{s}&=(1-1)\ket{s+\mathbb{1}_j+\mathbb{1}_i}
+	\\ &=0
+\end{align*}
+\vspace{-30pt}
+\begin{align*}
+		(\hat{a}_i\hat{a}_j-\hat{a}_j\hat{a}_i)
+		\ket{s}&=((s[i]-\delta_{ij})s[j]-(s[j]-\delta_{ij})s[i])\ket{s-\mathbb{1}_j-\mathbb{1}_i}
+		\\
+		&=\delta_{ij}(s[i]-s[j])\ket{s-\mathbb{1}_j-\mathbb{1}_i}\\
+		&=0
+\end{align*}
+\subsection{Propensity}
+Note that repeated application of the annihilation operator brings
+out combinatorial factors, and subsequent application of the
+creation operator can bring back the ket to its original state without
+further factors coming out
+\begin{align*}
+		\hat{a}_i^n\ket{s}
+		&=(s[i]-n+1)\dots(s[i]-1)s[i]\ket{s-n\mathbb{1}_i}\\
+		&=\frac{s[i]!}{(s[i]-n)!}\ket{s-n\mathbb{1}_i}\\
+		&=n!{s[i] \choose n}\ket{s-n\mathbb{1}_i}
+\end{align*}
+\vspace{-30pt}
+\begin{align}
+		\implies\qquad\frac{1}{n!}\hat{a}_i^{\dagger n}\hat{a}_i^n\ket{s}
+		&={s[i] \choose n}\ket{s}\qquad\qquad\qquad
+\end{align}
+Now that we have an eigenstate operator representation of the combinatoric
+factor involving $s[i]$ substitution into the general form for the propensity
+\eqref{eq:propensity} yields
+\begin{align*}
+	\hat\omega(r)=
+	\sigma[r]
+		\prod_{i=1}^S
+		\frac{\hat{a}_i^{\dagger g[i,r]}\hat{a}_i^{g[i,r]}}{g[i,r]!}
+\end{align*}
+We note that the products of $g[i,r]!$ simply renormalise the reaction rate
+$\sigma[r]$ suggesting we define renormalised propensity $\lambda[r]$ recovering
+equations \eqref{eq:propensityoperator}. We also note that it is possible to
+express the product over species $i$ in a compact form as a normal ordered inner
+product
+\begin{align}
+	\hat\omega(r)=
+	\lambda[r]\,
+		\mathbb{e}^{\,g(r)^{\top}\left(\,\ln\hat{a}^{\dagger}+\ln\hat{a} \,\right)}
+		\qquad\qquad\quad\\
+		\text{where}\qquad
+		\hat{a}=(\hat{a}_1\dots \hat{a}_S)\quad
+		g(r)=(g[1,r]\dots g[S,r])
+\end{align}
+\subsection{Shifts}
+\vspace{-10pt}
+Noting that while there exists no inverse of the annihilation operator --- since
+it is not possible to account for the case when $s[i]=0$ --- the creation
+operator has a simple inverse
+\begin{align*}
+	\hat{a}_i^{-\dagger}\hat{a}_i^{\dagger}\ket{s}
+	& :=\ket{s}\\
+	&=\hat{a}_i^{-\dagger}\ket{s+\mathbb{1}_i}
+	\qquad\implies\qquad
+	\hat{a}_i^{-\dagger}\ket{s}
+	=\ket{s-\mathbb{1}_i}
+\end{align*}
+and hence \eqref{eq:shiftoperator} is easily verified.
+\subsection{Reaction Term}
+d
 \end{document}

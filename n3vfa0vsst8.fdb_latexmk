@@ -1,15 +1,15 @@
 # Fdb version 3
-["bibtex n3vfa0vsst8"] 1524228577 "n3vfa0vsst8.aux" "n3vfa0vsst8.bbl" "n3vfa0vsst8" 1524229823
+["bibtex n3vfa0vsst8"] 1526294337 "n3vfa0vsst8.aux" "n3vfa0vsst8.bbl" "n3vfa0vsst8" 1526294452
   "/usr/share/texlive/texmf-dist/bibtex/bst/base/ieeetr.bst" 1292289607 18361 1a00e58565e7f19bf2b3e1bfb82254ae ""
-  "bibliography/biblio.bib" 1524219930 1317 53eeca50b49becb668ca85de6bfe067e ""
-  "n3vfa0vsst8.aux" 1524229823 10258 9095ae4237c621fc2e1a83c7d949b886 ""
+  "bibliography/biblio.bib" 1526055920 1638 cab2bf419d853fc0d717f3714a614e7d ""
+  "n3vfa0vsst8.aux" 1526294452 11428 534c07042c8500d3d0b7b4e402e9ada8 ""
   "n3vfa0vsst8.bcf" 0 -1 0 ""
   (generated)
   "n3vfa0vsst8.bbl"
   "n3vfa0vsst8.blg"
-["pdflatex"] 1524229821 "n3vfa0vsst8.tex" "/home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.pdf" "n3vfa0vsst8" 1524229823
+["pdflatex"] 1526294451 "n3vfa0vsst8.tex" "/home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.pdf" "n3vfa0vsst8" 1526294452
   "/etc/texmf/web2c/texmf.cnf" 1519309125 1101 af7716885e081ab43982cab7b4672c1a ""
-  "/home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.aux" 1524229823 10258 9095ae4237c621fc2e1a83c7d949b886 ""
+  "/home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.aux" 1526294452 11428 534c07042c8500d3d0b7b4e402e9ada8 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm" 1246382020 916 f87d7c45f9c908e672703b83b72241a3 ""
@@ -171,14 +171,14 @@
   "figures/saddlenode.png" 1523632128 61110 f07f0698d77a0965be082b9fea887339 ""
   "figures/stability.png" 1523617490 126849 b1fdd5765198dcaa33432b21bf1f9e9f ""
   "figures/transcritical.png" 1523632174 58638 1ea378cae542e605272de2128b797e60 ""
-  "n3vfa0vsst8.aux" 1524229823 10258 9095ae4237c621fc2e1a83c7d949b886 ""
-  "n3vfa0vsst8.bbl" 1524228577 821 3831896a4496e52be6ea1efd3959d742 "bibtex n3vfa0vsst8"
-  "n3vfa0vsst8.out" 1524229823 1678 b8f2fb0cfa7774af0e9e94527ffc8b94 ""
-  "n3vfa0vsst8.tex" 1524229821 34135 eaef26e91d1c2f88fec6ebdeb3cbba5f ""
+  "n3vfa0vsst8.aux" 1526294452 11428 534c07042c8500d3d0b7b4e402e9ada8 ""
+  "n3vfa0vsst8.bbl" 1526294337 952 c803b3858013e88ff87c45dc36029213 "bibtex n3vfa0vsst8"
+  "n3vfa0vsst8.out" 1526294452 2221 74d6618887a277a9ec9eabb6c1f948e0 ""
+  "n3vfa0vsst8.tex" 1526294450 40778 86a63b3dbb19a7daf9360527e85a7ad6 ""
   (generated)
-  "/home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.pdf"
-  "/home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.log"
   "n3vfa0vsst8.pdf"
-  "n3vfa0vsst8.aux"
+  "/home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.log"
   "n3vfa0vsst8.log"
+  "n3vfa0vsst8.aux"
+  "/home/gszep/Documents/lectures/field-theory/n3vfa0vsst8.pdf"
   "n3vfa0vsst8.out"
